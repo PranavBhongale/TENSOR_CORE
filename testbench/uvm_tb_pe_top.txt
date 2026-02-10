@@ -1,0 +1,201 @@
+`include "uvm_macros.svh"
+import uvm_pkg :: *;
+`timescale 1ns/1ps
+
+interface pe_if #(parameter int  DATA_W=8, int  ACC_W=32)(input logic clk);
+  logic rst_n;
+  logic signed [DATA_W-1:0] act;
+  logic signed [DATA_W-1:0] wgt;
+  logic acc_en;
+  logic acc_clr;
+  logic signed [ACC_W-1:0] psum;
+endinterface
+
+
+class pe_txn extends uvm_sequence_item;
+
+  rand logic signed [7:0] act ;
+  rand logic signed [7:0] wgt ;
+  rand bit acc_en ;
+  rand bit acc_clr ;
+
+
+  `uvm_object_utils(pe_txn)
+  function new(string name = "pe_txn" );
+    super.new(name );
+    endfunction
+
+endclass
+
+class pe_sequence extends uvm_sequence #(pe_txn) ;
+  `uvm_object_utils(pe_sequence)
+  function new(string name = "pe_sequence" ) ;
+    super.new(name ) ;
+  endfunction
+    int i_array[3];
+
+
+  task body();
+   pe_txn tr ;
+
+    tr = pe_txn :: type_id :: create("tr") ;
+    tr.acc_clr = 1;
+    tr.acc_en = 0 ;
+    start_item(tr) ;
+
+    finish_item(tr) ;
+//     int i_array[3];
+    foreach(i_array[i]) begin
+      tr = pe_txn::type_id::create($sformatf("mac_%0d",i));
+      tr.act = (i+1)*2;   // 2,4,6
+      tr.wgt = (i+1)*3;   // 3,6,9
+      tr.acc_en  = 1;
+      tr.acc_clr = 0;
+      start_item(tr); finish_item(tr);
+
+    end
+  endtask
+endclass
+class pe_sequencer extends uvm_sequencer #(pe_txn) ;
+  `uvm_component_utils(pe_sequencer)
+
+  function new(  string name  = "pe_sequencer" , uvm_component parent = null ) ;
+    super.new(name , parent ) ;
+  endfunction
+
+endclass
+
+
+class pe_driver extends uvm_driver #(pe_txn) ;
+  `uvm_component_utils(pe_driver)
+  virtual pe_if vif ;
+  function new( string name = "pe_driver" , uvm_component parent = null ) ;
+    super.new(name , parent ) ;
+  endfunction
+
+  function void build_phase(uvm_phase phase) ;
+    if(!uvm_config_db#(virtual pe_if ) :: get(this , "" , "vif" , vif ) ) begin
+      `uvm_fatal("DRV" , "virtual interface is not found ")
+    end
+  endfunction
+
+
+  task run_phase(uvm_phase phase ) ;
+   pe_txn tr ;
+    forever begin
+      seq_item_port.get_next_item(tr) ;
+      vif.act     <= tr.act;
+      vif.wgt     <= tr.wgt;
+      vif.acc_en  <= tr.acc_en;
+      vif.acc_clr <= tr.acc_clr;
+
+      @(posedge vif.clk);
+      seq_item_port.item_done();
+    end
+  endtask
+endclass
+
+
+class pe_monitor extends uvm_monitor ;
+  virtual pe_if  vif ;
+  uvm_analysis_port #(pe_txn) ap ;
+  `uvm_component_utils(pe_monitor)
+  function new(string name = "pe_monitor" , uvm_component parent = null ) ;
+    super.new(name , parent ) ;
+  endfunction
+
+function void build_phase(uvm_phase phase);
+    if (!uvm_config_db#(virtual pe_if)::get(this,"","vif",vif))
+      `uvm_fatal("MON","Virtual interface not found")
+  endfunction
+
+ task run_phase(uvm_phase phase);
+    forever begin
+      @(posedge vif.clk);
+      ap.write(vif.psum);
+    end
+  endtask
+  endclass
+
+  // score board
+
+  class pe_scoreboard extends uvm_component ;
+    int expected_psum = 0 ;
+    uvm_analysis_imp #(pe_txn, pe_scoreboard ) imp ;
+    `uvm_component_utils(pe_scoreboard)
+    function new(string name = "pe_scoreboard" , uvm_component parent = null ) ;
+      super.new(name , parent ) ;
+      imp = new("imp" , this ) ;
+    endfunction
+    function void write(int psum);
+
+   if (tr.acc_clr)
+      expected_psum = 0;
+    else if (tr.acc_en)
+      expected_psum += tr.act * tr.wgt;
+
+    if (tr.psum !== expected_psum)
+      `uvm_error("SCB",
+        $sformatf("Mismatch: got=%0d exp=%0d",
+                  tr.psum, expected_psum))
+      endfunction
+endclass
+
+
+      class pe_env extends uvm_env ;
+  pe_driver drv ;
+  pe_monitor mon ;
+  pe_scoreboard scb ;
+
+        `uvm_component_utils(pe_env)
+   function void build_phase(uvm_phase phase);
+    drv = pe_driver::type_id::create("drv", this);
+    mon = pe_monitor::type_id::create("mon", this);
+    scb = pe_scoreboard::type_id::create("scb", this);
+  endfunction
+function void connect_phase(uvm_phase phase);
+    mon.ap.connect(scb.imp);
+  endfunction
+endclass
+      class pe_test extends uvm_test ;
+         pe_env  env ;
+        `uvm_component_utils(pe_test)
+        function new ( string name = "pe_test" , uvm_component parent = null ) ;
+          super.new(name , parent ) ;
+        endfunction
+
+        function void build_phase (uvm_phase phase ) ;
+          env = pe_env :: type_id :: create("env", this ) ;
+        endfunction
+        task run_phase (uvm_phase phase ) ;
+          pe_sequence seq = pe_sequence :: type_id :: create("seq" , this ) ;
+          phase.raise_objection(this) ;
+          seq.start(env.drv.seq_item_port) ;
+          phase.drop_objection(this) ;
+        endtask
+      endclass
+
+module uvm_tb_pe_top ;
+   logic clk = 0 ;
+   always #5 clk = ~clk ;
+  pe_if pe_vif(clk) ;
+  pe_top dut (
+ .clk(clk),
+    .rst_n(pe_vif.rst_n),
+    .act(pe_vif.act),
+    .wgt(pe_vif.wgt),
+    .acc_en(pe_vif.acc_en),
+    .acc_clr(pe_vif.acc_clr),
+    .psum(pe_vif.psum)
+  );
+
+ initial begin
+   pe_vif.rst_n = 0 ;
+   #20 pe_vif.rst_n = 1 ;
+ end
+initial begin
+  uvm_config_db#(virtual pe_if)::set(null, "*", "vif", pe_vif);
+    run_test("pe_test");
+  end
+
+endmodule
