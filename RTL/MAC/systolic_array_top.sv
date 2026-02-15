@@ -3,19 +3,24 @@
 module systolic_array_top #(
   parameter int DATA_W = 8,
   parameter int ACC_W  = 32,
-  parameter int ROWS   = 8,
-  parameter int COLS   = 8,
-  parameter int K      = 8   // Number of MAC operations to perform before outputting result
+  parameter int ROWS   = 4,
+  parameter int COLS   = 4,
+  parameter int K      = 4   // Number of MAC operations to perform before outputting result
 ) (
   input logic clk,
   input logic reset_n,
   output logic done,
-  input logic signed [DATA_W-1:0] matrix_acc_col [COLS], // we have to feed the leftmost column of activations first
+  input logic signed [DATA_W-1:0] matrix_acc_col [COLS], // we have to feed the leftmost column of
+  // activations first
   input logic matrix_acc_valid,
-  input logic signed [DATA_W-1:0] matrix_wet_row [ROWS],  //  we have to feed the bottem row of weights first
+  input logic signed [DATA_W-1:0] matrix_wet_row [ROWS],  //  we have to feed the bottem row of
+  //weights first
   input logic matrix_wet_valid,
   output logic signed [ACC_W-1:0] result_matrix [ROWS][COLS],
-  output logic result_valid
+  output logic result_valid,
+  // input  of c matrix
+  input logic signed [ACC_W-1:0] C_data[ROWS],
+  input logic C_data_valid[ROWS]
 );
 
 
@@ -41,7 +46,11 @@ mac_top #(
   .act_valid(matrix_acc_valid_array),
   .wgt_data(matrix_wet_col_array),
   .wgt_valid(matrix_wet_valid_array),
-  .psum_out(result_matrix_valid_array)
+  .psum_out(result_matrix_valid_array),
+  // C_data and C_data_valid connections
+  .C_data(C_data),
+  .C_data_valid(C_data_valid),
+  .c_lock(c_lock)
 );
 
 //  the simple approach is to make the queue for each and hardcode it
@@ -81,10 +90,12 @@ end
 endgenerate
 
 
- // regester the matrix_acc_valid and matrix_wet_valid  we need this to make sure that we are feeding the data at the same cycle and also to make sure that we are not feeding the data after done is asserted
+ // regester the matrix_acc_valid and matrix_wet_valid  we need this to
+ //make sure that we are feeding the data at the same cycle and also to
+ //make sure that we are not feeding the data after done is asserted
  logic matrix_acc_valid_reg;
 logic matrix_wet_valid_reg;
-
+logic c_lock;
 always_ff @(posedge clk) begin
   if (!reset_n) begin
     matrix_acc_valid_reg <= 1'b0;
@@ -99,8 +110,9 @@ always_ff @(posedge clk) begin
   end
 end
 
-//  we need to wait col + row cycle from first input  affter  that we need to give the output so  
- // we have to make the copunter for this which will count the cycle after the first input is fed in, and then assert done after col + row cycle
+//  we need to wait col + row cycle from first input  affter  that we need to give the output so
+ // we have to make the copunter for this which will count the cycle after the first input is fed in,
+ // and then assert done after col + row cycle
 logic [7:0] cycle_counter;
 always_ff @(posedge clk) begin
   if (!reset_n) begin
@@ -109,21 +121,46 @@ always_ff @(posedge clk) begin
   end else if (matrix_acc_valid_reg && matrix_wet_valid_reg) begin
     cycle_counter <= cycle_counter + 1;
     counter_sync <= 1'b1;
-    if (cycle_counter >= 8'(ROWS + COLS -2 + K)) begin
-      done <= 1'b1;
+    if (cycle_counter >= (8'(ROWS + COLS -2 + K))) begin
+      // this is because we want one extra cycle to compute c and psum final and put into resule
       // we have to give the data
-      result_valid <= 1'b1;
-      result_matrix <= result_matrix_valid_array;
-      cycle_counter <= 0; // Reset cycle counter after output is given
-      matrix_acc_valid_reg <= 1'b0; // Reset valid flags to prevent re-triggering
-      matrix_wet_valid_reg <= 1'b0; // Reset valid flags to prevent re-triggering
+      // matrix_acc_valid_reg <= 1'b0; // Reset valid flags to prevent re-triggering
+      // matrix_wet_valid_reg <= 1'b0; // Reset valid flags to prevent re-triggering
       counter_sync <= 1'b0;
+      result_valid <= 1'b1;
+    //  result_matrix <= result_matrix_valid_array;
     end
+         if (cycle_counter >= (8'(ROWS + COLS -2 + K) + 8'b00000001)) begin
+            done <= 1'b1;
+         end
+    // we have to get the data at next cycle of timer_counter and then we have to give the data to result_matrix
+     if (cycle_counter >= (8'(ROWS + COLS -2 + K) + 8'b00000010)) begin
+      result_valid <= 1'b0; // Deassert result_valid after one cycle
+      cycle_counter <= 0; // Reset cycle counter after output is given
+       done <= 1'b0;
+       matrix_acc_valid_reg <= 1'b0; // Reset valid flags to prevent re-triggering
+      matrix_wet_valid_reg <= 1'b0; // Reset valid flags to prevent re-triggering
   end
 end
+
 // the condition for giving the data to systolic_array_top  we have to feed the data   for matrix at the same cycle
 // it is not like we send first data and then second data  we have to send it correctly
-
+end
+/* verilator lint_off LATCH */
+ always_comb begin
+  if (cycle_counter >= (8'(ROWS + COLS -2 + K) + 8'b00000010)) begin
+    result_matrix = result_matrix_valid_array;
+  end else begin
+   // result_matrix = 32'h0;
+   //Eat five star do nothing
+  end
+  if(cycle_counter >= (8'(ROWS-1)) && (cycle_counter < (8'(ROWS))))
+  begin
+     c_lock = 1'b1;
+  end else
+ begin
+    c_lock = 1'b0;
+  end
+end
+/* verilator lint_on LATCH */
 endmodule
-
-
