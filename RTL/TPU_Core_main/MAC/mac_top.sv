@@ -3,8 +3,8 @@
 module mac_top #(
   parameter int DATA_W = 8,
   parameter int ACC_W  = 32,
-  parameter int ROWS   = 4,  // Number of PE rows
-  parameter int COLS   = 4  // Number of PE columns
+  parameter int ROWS   = 8,  // Number of PE rows
+  parameter int COLS   = 8  // Number of PE columns
   // parameter int K      = 2    // Number of MAC operations to perform before outputting result
 ) (
   input  logic clk,

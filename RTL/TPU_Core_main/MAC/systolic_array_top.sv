@@ -3,9 +3,9 @@
 module systolic_array_top #(
   parameter int DATA_W = 8,
   parameter int ACC_W  = 32,
-  parameter int ROWS   = 4,
-  parameter int COLS   = 4,
-  parameter int K      = 4   // Number of MAC operations to perform before outputting result
+  parameter int ROWS   = 8,
+  parameter int COLS   = 8,
+  parameter int K      = 8   // Number of MAC operations to perform before outputting result
 ) (
   input logic clk,
   input logic reset_n,

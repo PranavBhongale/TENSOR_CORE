@@ -1,11 +1,23 @@
+/// this is the testbench for the systolic array with simultaneous feeding of A, B, and C matrices.
+// It includes multiple tests with known values, random values, and various bias configurations to thoroughly 
+//verify the functionality of the systolic array design. The testbench also features detailed reporting of
+// results and a final summary of all tests.
+
+// in this we are provoding the data at the same cycle for a b and c and we are also providing the data of c
+// and we are wating for done signal and i also integrating the golden model for this
+
+//this will check the functionality of the systolic array when we are feeding the data of a b and c at the
+// same cycle and also we are feeding the data of c and we are wating for done signal and i also
+// integrating the golden model for this
+
 `timescale 1ns/1ps
 module tb_systolic_array_for_two_test();
     // Parameters
     localparam int DATA_W = 8;
     localparam int ACC_W  = 32;
-    localparam int ROWS   = 4;
-    localparam int COLS   = 4;
-    localparam int K      = 4;
+    localparam int ROWS   = 8;
+    localparam int COLS   = 8;
+    localparam int K      = 8;
 
     // Clock period
     localparam int CLK_PERIOD = 10;
