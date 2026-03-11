@@ -1,0 +1,47 @@
+[*]
+[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+[*] Wed Mar 11 10:00:55 2026
+[*]
+[dumpfile] "C:\Users\Netizens\Documents\SV_project\8X8_TPU\weight_tb.vcd"
+[dumpfile_mtime] "Wed Mar 11 07:27:08 2026"
+[dumpfile_size] 18142
+[savefile] "C:\Users\Netizens\Documents\SV_project\8X8_TPU\weight.gtkw"
+[timestart] 0
+[size] 1366 697
+[pos] -1 -1
+*-14.000000 31940 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] weight_tb.
+[treeopen] weight_tb.dut.
+[sst_width] 174
+[signals_width] 190
+[sst_expanded] 1
+[sst_vpaned_height] 191
+@22
+weight_tb.dut.u_bias_broadcast.weight_out[0][7:0]
+weight_tb.dut.u_bias_broadcast.weight_out[1][7:0]
+weight_tb.dut.u_bias_broadcast.weight_out[2][7:0]
+weight_tb.dut.u_bias_broadcast.weight_out[3][7:0]
+weight_tb.dut.u_bias_broadcast.weight_out[4][7:0]
+weight_tb.dut.u_bias_broadcast.weight_out[5][7:0]
+weight_tb.dut.u_bias_broadcast.weight_out[6][7:0]
+weight_tb.dut.u_bias_broadcast.weight_out[7][7:0]
+@28
+weight_tb.dut.u_bias_broadcast.weight_valid
+weight_tb.dut.u_bias_broadcast.weight_valid_out
+weight_tb.dut.u_bias_broadcast.buffer_select_load
+weight_tb.dut.u_bias_broadcast.buffer_select_stream
+@2028
+^1 C:\Users\Netizens\Documents\SV_project\8X8_TPU\sourceCode\RTL\Memory_system\bias_buffer\state_enum.txt
+weight_tb.dut.u_bias_controller.stateA[1:0]
+^1 C:\Users\Netizens\Documents\SV_project\8X8_TPU\sourceCode\RTL\Memory_system\bias_buffer\state_enum.txt
+weight_tb.dut.u_bias_controller.stateB[1:0]
+@420
+weight_tb.dut.weight_data[7:0]
+@28
+weight_tb.dut.weight_valid
+@24
+weight_tb.dut.u_bias_controller.loadcounterA[5:0]
+@25
+weight_tb.dut.u_bias_controller.loadcounterB[5:0]
+[pattern_trace] 1
+[pattern_trace] 0

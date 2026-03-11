@@ -22,11 +22,11 @@ VFLAGS = \
 MAC_TOP = tb_systolic_array_for_two_test
 
 MAC_SRC = \
-	RTL/TPU_Core_main/MAC/mac_top.sv \
-    RTL/TPU_Core_main/MAC/pe_top.sv \
-	RTL/TPU_Core_main/MAC/systolic_array_top.sv \
-	RTL/TPU_Core_main/MAC/shift_register.sv \
-	testbench/systolic_array_testbench/tb_systolic_array_for_two_test.sv
+	sourceCode/RTL/TPU_Core_main/MAC/mac_top.sv \
+    sourceCode/RTL/TPU_Core_main/MAC/pe_top.sv \
+	sourceCode/RTL/TPU_Core_main/MAC/systolic_array_top.sv \
+	sourceCode/RTL/TPU_Core_main/MAC/shift_register.sv \
+	sourceCode/testbench/systolic_array_testbench/tb_systolic_array_for_two_test.sv
 
 mac:
 	$(VERILATOR) $(VFLAGS) \
@@ -39,13 +39,13 @@ mac:
 ACT_TOP = activation_block_tb
 
 ACT_SRC = \
-	RTL/TPU_Core_main/Activation_block/activation_top.sv \
-	RTL/TPU_Core_main/Activation_block/data_lane.sv \
-	RTL/TPU_Core_main/Activation_block/GELU/shift_unit.sv \
-	RTL/TPU_Core_main/Activation_block/GELU/gelu_lut.sv \
-	RTL/TPU_Core_main/Activation_block/GELU/Look_Table.sv \
-	RTL/TPU_Core_main/Activation_block/GELU/Clamp_unit.sv \
-    testbench/Activation_test_bench/activation_block_tb.sv
+	sourceCode/RTL/TPU_Core_main/Activation_block/activation_top.sv \
+	sourceCode/RTL/TPU_Core_main/Activation_block/data_lane.sv \
+	sourceCode/RTL/TPU_Core_main/Activation_block/GELU/shift_unit.sv \
+	sourceCode/RTL/TPU_Core_main/Activation_block/GELU/gelu_lut.sv \
+	sourceCode/RTL/TPU_Core_main/Activation_block/GELU/Look_Table.sv \
+	sourceCode/RTL/TPU_Core_main/Activation_block/GELU/Clamp_unit.sv \
+    sourceCode/testbench/Activation_test_bench/activation_block_tb.sv
 
 activation:
 	$(VERILATOR) $(VFLAGS) \
@@ -59,8 +59,8 @@ activation:
 FULL_TOP = tb_top
 
 FULL_SRC = \
-	RTL/**/*.sv \
-	testbench/tb_top.sv
+	sourceCode/RTL/**/*.sv \
+	sourceCode/testbench/tb_top.sv
 
 full:
 	$(VERILATOR) $(VFLAGS) \
@@ -72,8 +72,8 @@ full:
 TPU_CORE_TOP = TPU_CORE_TB
 
 TPU_CORE_SOURCE = \
-    $(shell find RTL/TPU_core_main -name "*.sv") \
-    testbench/TPU_core_main_testbench/TPU_CORE_TB.SV
+    $(shell find sourceCode/RTL/TPU_core_main -name "*.sv") \
+    sourceCode/testbench/TPU_core_main_testbench/TPU_CORE_TB.SV
 
 tpu_core:
 	$(VERILATOR) $(VFLAGS) \
@@ -102,6 +102,45 @@ clean:
 data_lane:
 	$(VERILATOR) $(VFLAGS) \
 	--top-module data_lane_tb \
-	RTL/TPU_Core_main/Activation_block/data_lane.sv \
-	testbench/Activation_test_bench/data_lane_tb.sv
+	sourceCode/RTL/TPU_Core_main/Activation_block/data_lane.sv \
+	sourceCode/testbench/Activation_test_bench/data_lane_tb.sv
 	./obj_dir/Vdata_lane_tb
+
+
+#-----------------------------------------------------
+# this is for bias file 
+#-----------------------------------------------------
+
+bias:
+	$(VERILATOR) $(VFLAGS) \
+	-I./sourceCode/RTL/Memory_system/bias_buffer \
+	--top-module bias_medium  \
+	sourceCode/RTL/Memory_system/bias_buffer/bias_brodcast.sv \
+	sourceCode/RTL/Memory_system/bias_buffer/bias_controller.sv \
+	sourceCode/RTL/Memory_system/bias_buffer/bias_top.sv \
+	sourceCode/testbench/memory_unit_tb/bias_tb/bias_medium.sv
+
+	./obj_dir/Vbias_medium
+
+weight:
+	$(VERILATOR) $(VFLAGS) \
+	-I./sourceCode/RTL/Memory_system/weight_buffer \
+	--top-module weight_tb  \
+	sourceCode/RTL/Memory_system/weight_buffer/weight_buffer.sv \
+	sourceCode/RTL/Memory_system/weight_buffer/weight_control.sv \
+	sourceCode/RTL/Memory_system/weight_buffer/weight_top.sv \
+	sourceCode/testbench/memory_unit_tb/weight_tb/weight_tb.sv
+	./obj_dir/Vweight_tb
+
+
+activation:
+	$(VERILATOR) $(VFLAGS) \
+	-I./sourceCode/RTL/Memory_system/activation_buffer \
+	--top-module activation_tb  \
+	sourceCode/RTL/Memory_system/activation_buffer/activation_buffer.sv \
+	sourceCode/RTL/Memory_system/activation_buffer/activation_control.sv \
+	sourceCode/RTL/Memory_system/activation_buffer/activation_top.sv \
+	sourceCode/testbench/memory_unit_tb/activation_tb/activation_tb.sv
+	./obj_dir/Vactivation_tb
+
+

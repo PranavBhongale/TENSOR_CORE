@@ -1,0 +1,69 @@
+[*]
+[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+[*] Tue Mar 10 18:55:36 2026
+[*]
+[dumpfile] "C:\Users\Netizens\Documents\SV_project\8X8_TPU\bias_tb.vcd"
+[dumpfile_mtime] "Tue Mar 10 18:39:15 2026"
+[dumpfile_size] 30168
+[savefile] "C:\Users\Netizens\Documents\SV_project\8X8_TPU\bias.gtkw"
+[timestart] 986870
+[size] 1366 697
+[pos] -1 -1
+*-14.000000 1027010 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] bias_medium.
+[treeopen] bias_medium.dut.
+[treeopen] bias_medium.dut.u_bias_broadcast.
+[sst_width] 174
+[signals_width] 182
+[sst_expanded] 1
+[sst_vpaned_height] 191
+@22
+bias_medium.bias_out[0][31:0]
+bias_medium.bias_out[1][31:0]
+bias_medium.bias_out[2][31:0]
+bias_medium.bias_out[3][31:0]
+bias_medium.bias_out[4][31:0]
+bias_medium.bias_out[5][31:0]
+bias_medium.bias_out[6][31:0]
+bias_medium.bias_out[7][31:0]
+@2028
+^1 C:\Users\Netizens\Documents\SV_project\8X8_TPU\sourceCode\RTL\Memory_system\bias_buffer\state_enum.txt
+bias_medium.dut.u_bias_controller.stateA[1:0]
+^1 C:\Users\Netizens\Documents\SV_project\8X8_TPU\sourceCode\RTL\Memory_system\bias_buffer\state_enum.txt
+bias_medium.dut.u_bias_controller.stateB[1:0]
+^1 C:\Users\Netizens\Documents\SV_project\8X8_TPU\sourceCode\RTL\Memory_system\bias_buffer\state_enum.txt
+bias_medium.dut.u_bias_controller.stateC[1:0]
+@28
+bias_medium.dut.u_bias_controller.bias_valid
+bias_medium.dut.u_bias_controller.bias_valid_reg
+@22
+bias_medium.dut.u_bias_broadcast.bias.bias_data[31:0]
+bias_medium.dut.u_bias_broadcast.bias.bias_data_reg[31:0]
+@28
+bias_medium.dut.u_bias_broadcast.bias.bias_valid
+@22
+bias_medium.dut.u_bias_broadcast.bias.buffer0[0][31:0]
+bias_medium.dut.u_bias_broadcast.bias.buffer0[1][31:0]
+bias_medium.dut.u_bias_broadcast.bias.buffer0[2][31:0]
+bias_medium.dut.u_bias_broadcast.bias.buffer0[3][31:0]
+bias_medium.dut.u_bias_broadcast.bias.buffer0[4][31:0]
+bias_medium.dut.u_bias_broadcast.bias.buffer0[5][31:0]
+bias_medium.dut.u_bias_broadcast.bias.buffer0[6][31:0]
+bias_medium.dut.u_bias_broadcast.bias.buffer0[7][31:0]
+@28
+bias_medium.dut.u_bias_broadcast.bias.lock_data
+@2028
+^2 C:\Users\Netizens\Documents\SV_project\8X8_TPU\sourceCode\RTL\Memory_system\bias_buffer\bias_type.txt
+bias_medium.dut.u_bias_broadcast.bias_type[1:0]
+@28
+bias_medium.dut.u_bias_broadcast.counter[2:0]
+@24
+bias_medium.dut.u_bias_broadcast.bias.counter[3:0]
+@22
+[color] 1
+bias_medium.dut.u_bias_controller.stream_counter[3:0]
+@29
+[color] 3
+bias_medium.dut.streaming_valid
+[pattern_trace] 1
+[pattern_trace] 0

@@ -4,7 +4,7 @@ from scipy.special import erf
 # Integer byte domain
 x_int = np.arange(-128, 128)
 
-# Convert to real domain if needed
+# Convert to real domain
 # If SHIFT_BITS = 3, hardware scaled by 8
 # so real value = x_int / (2^SHIFT_BITS)
 SHIFT_BITS = 3

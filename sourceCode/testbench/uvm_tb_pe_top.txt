@@ -19,7 +19,6 @@ class pe_txn extends uvm_sequence_item;
   rand bit acc_en ;
   rand bit acc_clr ;
 
-
   `uvm_object_utils(pe_txn)
   function new(string name = "pe_txn" );
     super.new(name );
