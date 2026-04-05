@@ -1,0 +1,58 @@
+[*]
+[*] GTKWave Analyzer v3.3.118 (w)1999-2023 BSI
+[*] Sat Mar 14 14:02:48 2026
+[*]
+[dumpfile] "C:\Users\Netizens\Documents\SV_project\8X8_TPU\output_buffer_tb.vcd"
+[dumpfile_mtime] "Sat Mar 14 13:44:26 2026"
+[dumpfile_size] 624226
+[savefile] "C:\Users\Netizens\Documents\SV_project\8X8_TPU\output.gtkw"
+[timestart] 83000
+[size] 1366 697
+[pos] -35 -35
+*-14.000000 90940 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] output_buffer_tb.
+[treeopen] output_buffer_tb.dut.
+[sst_width] 174
+[signals_width] 206
+[sst_expanded] 1
+[sst_vpaned_height] 191
+@2028
+^1 C:\Users\Netizens\Documents\SV_project\8X8_TPU\sourceCode\RTL\Memory_system\bias_buffer\state_enum.txt
+output_buffer_tb.dut.u_output_control.stateA[1:0]
+@28
+output_buffer_tb.dut.u_output_control.streaming_valid
+@420
+output_buffer_tb.dut.u_output_buffer.output_data_in[2][7:0]
+output_buffer_tb.dut.u_output_buffer.output_data_in[3][7:0]
+output_buffer_tb.dut.u_output_buffer.output_data_in[4][7:0]
+output_buffer_tb.dut.u_output_buffer.output_data_in[5][7:0]
+output_buffer_tb.dut.u_output_buffer.output_data_in[6][7:0]
+output_buffer_tb.dut.u_output_buffer.output_data_in[7][7:0]
+@28
+output_buffer_tb.dut.u_output_control.stateB[1:0]
+output_buffer_tb.dut.u_output_buffer.output_valid_out
+output_buffer_tb.dut.u_output_control.streaming_valid
+output_buffer_tb.dut.u_output_buffer.buffer_read
+output_buffer_tb.dut.u_output_buffer.buffer_write
+@22
+output_buffer_tb.dut.u_output_buffer.ptr[31:0]
+output_buffer_tb.dut.u_output_buffer.ptr_read[31:0]
+output_buffer_tb.dut.u_output_control.loadcounterA[4:0]
+output_buffer_tb.dut.u_output_control.loadcounterB[4:0]
+@28
+output_buffer_tb.dut.output_data_valid
+output_buffer_tb.dut.streaming_valid
+output_buffer_tb.dut.output_ready
+output_buffer_tb.dut.output_data_valid
+@22
+output_buffer_tb.dut.output_data_len[7:0]
+@28
+output_buffer_tb.dut.output_data_len_valid
+@22
+output_buffer_tb.dut.u_output_buffer.ptr[31:0]
+@28
+output_buffer_tb.dut.u_output_buffer.buffer_read
+@29
+output_buffer_tb.dut.u_output_buffer.buffer_write
+[pattern_trace] 1
+[pattern_trace] 0
